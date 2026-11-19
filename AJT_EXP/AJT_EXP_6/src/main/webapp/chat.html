@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Application</title>
+</head>
+
+<body>
+    <h2>Real Time Chat Application</h2>
+    Name: <input type="text" id="userName"><br><br>
+    Message: <textarea id="message" rows="4" cols="30"></textarea><br><br>
+    <button type="button" onclick="sendMessage()">Send</button>
+
+    <h3>Chat Messages</h3><textarea id="chatBox" rows="15" cols="50" readonly></textarea>
+    
+<script>
+
+        var socket = new WebSocket("ws://localhost:8080/AJT_EXP_6/WS");
+
+        socket.onopen = function() { console.log("Connected to server");};
+        socket.onmessage = function(event) { document.getElementById("chatBox").value += event.data + "\n";};
+        socket.onclose = function() { console.log("Disconnected from server"); };
+        socket.onerror = function(error) { console.log("WebSocket Error:", error); };
+
+        function sendMessage() {
+
+            var username = document.getElementById("userName").value;
+            var message = document.getElementById("message").value;
+            if (username.trim() == "" || message.trim() == "") {
+                alert("Enter Username and Message");
+                return;
+            }
+            
+            socket.send(username + " : " + message);
+            
+            document.getElementById("message").value = "";
+        }
+
+    </script>
+
+</body>
+</html>
